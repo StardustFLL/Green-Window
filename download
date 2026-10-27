@@ -1,0 +1,30 @@
+# Dependências (caso um dia o projeto passe a usar npm)
+node_modules/
+
+# Credenciais e variáveis de ambiente — NUNCA enviar ao GitHub
+.env
+.env.*
+serviceAccount*.json
+*-adminsdk-*.json
+firebase-key*.json
+
+# Firebase CLI (arquivos locais/temporários)
+.firebase/
+firebase-debug.log*
+firestore-debug.log
+ui-debug.log
+
+# Temporários e lixo de sistema
+*.log
+*.tmp
+*.bak
+tmp/
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+
+# Pacotes gerados para transferência
+*.zip
