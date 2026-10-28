@@ -1,6 +1,7 @@
 /* Links públicos dos seis QR Codes. Não concede desbloqueio: o app valida no Firestore. */
 (function () {
   'use strict';
+  const release = '20261028-3';
   const ids = Object.freeze(Array.from({ length: 6 }, (_, i) => 'planta-' + (i + 1)));
   const scriptRoot = new URL('.', document.currentScript?.src || location.href);
   const pendingKey = 'jv_pending_plant_v1';
@@ -15,7 +16,7 @@
   }
   function build(id) {
     if (!validId(id)) throw new Error('Planta inválida.');
-    const url = installationPage(); url.searchParams.set('planta', id); return url.href;
+    const url = installationPage(); url.searchParams.set('planta', id); url.searchParams.set('v', release); return url.href;
   }
   function entry(url) {
     const values = url.searchParams.getAll('planta');
@@ -45,8 +46,8 @@
     try { const value = JSON.parse(storage.getItem(pendingKey)); return validId(value?.plantId) ? value.plantId : null; }
     catch (_) { return null; }
   }
-  window.JV_QR_LINKS = Object.freeze({ ids, validId, code, build, parse, entry, portable, remember, pending,
+  window.JV_QR_LINKS = Object.freeze({ release, ids, validId, code, build, parse, entry, portable, remember, pending,
     clear(storage = localStorage) { storage.removeItem(pendingKey); },
-    appUrl(id) { const url = new URL('Janela Verde (20).html', scriptRoot); if (validId(id)) url.searchParams.set('planta', id); return url.href; }
+    appUrl(id) { const url = new URL('index.html', scriptRoot); if (validId(id)) url.searchParams.set('planta', id); url.searchParams.set('v', release); return url.href; }
   });
 })();

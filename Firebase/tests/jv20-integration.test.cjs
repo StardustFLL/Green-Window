@@ -24,7 +24,10 @@ function collection() {
 test('version 20 loads the shared Firebase files and uses the cloud AI service without recursion', async () => {
   new vm.Script(html.split('<script>').pop().split('</script>')[0]);
   for (const match of html.matchAll(/<script src="([^"]+)"/g)) {
-    if (!match[1].startsWith('https:')) assert.ok(fs.existsSync(path.join(root, match[1])), match[1]);
+    if (!match[1].startsWith('https:')) {
+      const file = decodeURIComponent(new URL(match[1], 'https://local.example/').pathname.slice(1));
+      assert.ok(fs.existsSync(path.join(root, file)), match[1]);
+    }
   }
   let calls = 0;
   const sandbox = { claude: { use: async name => {

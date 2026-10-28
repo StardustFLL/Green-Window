@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR"><meta charset="utf-8"><title>Prévia local — cadastro e mapa</title>
+<style>body{margin:20px;background:#110b20;color:#fff;font:15px system-ui}button{padding:10px 14px;border-radius:9px;border:1px solid #a98cce;background:#36204f;color:#fff;cursor:pointer;margin:3px}iframe{display:block;width:100%;height:3200px;border:1px solid #8560ab;margin-top:14px}p{color:#d9c5ef}</style>
+<h1>Prévia técnica — dados de teste</h1>
+<p>Ambiente local isolado, sem sincronização de cadastro. Os municípios são reais; as contas e as ruas são exemplos.</p>
+<button onclick="preview('signup')">Ver cadastro sem CPF e GPS</button>
+<button onclick="preview('empty')">Mapa sem endereço</button>
+<button onclick="preview('addresses')">Mapa com endereços de teste</button>
+<p id="state" role="status">Preparando…</p><iframe id="preview" title="App local em teste"></iframe>
+<script>
+'use strict';
+const allowed=(location.hostname==='127.0.0.1'&&location.port==='8768')||(location.hostname==='localhost'&&location.port==='8767');
+function preview(mode){
+  if(!allowed){document.querySelector('#state').textContent='Fixture desativada: use localhost:8767 em um ambiente de teste.';return}
+  let existing;try{existing=JSON.parse(localStorage.getItem('jv_demo_v1')||'null')}catch(e){document.querySelector('#state').textContent='Fixture interrompida: há dados de outro teste neste navegador.';return}
+  if(existing&&Object.values(existing.users||{}).some(u=>u.testFixture!=='location-map-v1')){document.querySelector('#state').textContent='Fixture interrompida para preservar contas já existentes neste navegador.';return}
+  const base={testFixture:'location-map-v1',id:'teste-mapa',nome:'Teste sem endereço',email:'',tel:'',nasc:'',char:'Teste local',created:Date.now(),ph:'fixture',salt:'fixture',avatar:'🌱',consent:Date.now(),cloudConsent:false,cloudConsentAt:null,plants:[],regs:[],pts:[],resg:[],qr:[],coll:{},shots:[],sched:[],pg:{},pc:{},geo:{lat:-22.5,lng:-47.4},gpsConsent:true,onboarded:true};
+  const users={a:{...base,id:'a'}};
+  if(mode==='addresses'){
+    users.b={...base,id:'b',nome:'Teste Limeira 1',end:'Rua de Exemplo, 100, Limeira – SP',localCultivo:{endereco:'Rua de Exemplo, 100',cidade:'Limeira',uf:'SP'}};
+    users.c={...base,id:'c',nome:'Teste Campinas',end:'Rua de Exemplo, 200, Campinas – SP',localCultivo:{endereco:'Rua de Exemplo, 200',cidade:'Campinas',uf:'SP'}};
+    users.d={...base,id:'d',nome:'Teste Limeira 2',end:'Rua de Exemplo, 300, Limeira – SP',localCultivo:{endereco:'Rua de Exemplo, 300',cidade:'Limeira',uf:'SP'}};
+  }
+  localStorage.setItem('jv_demo_v1',JSON.stringify({users,session:mode==='signup'?null:'a'}));
+  localStorage.removeItem('jv_pending_plant_v1');
+  const frame=document.querySelector('#preview');
+  frame.onload=()=>{
+    if(mode==='signup')frame.contentWindow.go('signup');
+    else frame.contentWindow.eval("tmp.admok=true;go('admin')");
+    document.querySelector('#state').textContent=mode==='signup'?'Cadastro: sem CPF, sem GPS e com endereço da planta.':mode==='empty'?'Sem endereço: nenhum marcador deve aparecer, mesmo com coordenadas antigas.':'Três endereços de teste: dois municípios; Limeira deve agrupar duas contas. A conta sem endereço fica fora do mapa.';
+  };
+  frame.src='../../Janela%20Verde%20(20).html';
+}
+preview('signup');
+</script></html>

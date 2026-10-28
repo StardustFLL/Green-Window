@@ -1,6 +1,6 @@
 # 🌿 Janela Verde
 
-App web de jardinagem e biodiversidade da equipe **STARDUST – SESI 005 Limeira**: cadastro com GPS, leitura de QR Code do vaso, registro diário de plantas com foto (validada por IA), pontos, ranking, avatar, recompensas, assistente **Green AI** e painel do administrador.
+App web de jardinagem e biodiversidade da equipe **STARDUST – SESI 005 Limeira**: cadastro com endereço de cultivo da planta, leitura de QR Code do vaso, registro diário de plantas com foto (validada por IA), pontos, ranking, avatar, recompensas, assistente **Green AI** e painel do administrador.
 
 É um app web estático, sem etapa de build; o site publicado está em `index.html`.
 
@@ -8,7 +8,10 @@ App web de jardinagem e biodiversidade da equipe **STARDUST – SESI 005 Limeira
 
 | Arquivo | Para quê |
 |---|---|
-| `index.html` | Aplicação publicada (HTML, estilos e lógica do site) |
+| `index.html` | Entrada oficial: versão atual completa do app |
+| `Janela Verde (20).html` | Mesmo conteúdo do index, preservado para links anteriores |
+| `app-features.js` | Chave reversível do GPS, desativado por padrão |
+| `usage-map.js` | Mapa administrativo por município, sem GPS |
 | `Firebase/firebase-config.js` | Configuração pública do app Web Firebase e chave pública do App Check |
 | `Firebase/firebase-adapter.js` | Autenticação anônima, Firestore e chamada da função de IA |
 | `Firebase/firestore.rules` | Regras de acesso ao Firestore |
@@ -26,7 +29,7 @@ Na Web, o app usa Firebase AI Logic com Gemini como provedor principal para a Gr
 
 - O site funciona sem Firebase: os dados permanecem no `localStorage` do navegador.
 - A sincronização para o Firestore é opcional. A pessoa escolhe no cadastro ou em **Perfil → Privacidade**; não começa sem essa escolha.
-- Com autorização, o app envia nome, CPF, e-mail, telefone, nascimento, endereço/localização, perfil, plantas, observações, pontos, resgates, QR Codes e registros. As fotos de registro são enviadas como cópias JPEG reduzidas; o app mantém a cópia de 600 px localmente e não envia a imagem de origem. Senha, hash e sal não são enviados.
+- Com autorização, o app envia nome, e-mail, telefone, nascimento, endereço de cultivo, perfil, plantas, observações, pontos, resgates, QR Codes e registros. O cadastro não solicita CPF. As fotos de registro são enviadas como cópias JPEG reduzidas; o app mantém a cópia de 600 px localmente e não envia a imagem de origem. Senha, hash e sal não são enviados.
 - O app pode ler configurações e ranking públicos com uma identidade anônima do Firebase; gravações do cadastro e das atividades só são feitas após o consentimento opcional. As contas e senhas do Janela Verde continuam locais: entrar na conta local em outro aparelho não recupera automaticamente os dados do primeiro.
 - O documento `cadastros/{uid}` contém o campo `contas`; registros/fotos ficam em `cadastros/{uid}/regs`; o ranking contém apenas personagem, avatar e pontuação.
 - O projeto usa seis plantas fixas. Cada documento `plantas/planta-1` até `plantas/planta-6` mantém um identificador interno (`janelaverde:planta-N`). Os novos QR Codes contêm links para `instalar.html?planta=planta-N`: todos abrem a mesma instalação, cada um libera somente sua planta na versão 20 após validação no Firestore. O catálogo inteiro começa bloqueado; fotos e metas não substituem o QR. Veja [os links e a preparação da instalação](QR-CODES-INSTALACAO.md) e o [guia do banco](Firebase/GUIA-SEIS-PLANTAS.md).
@@ -56,11 +59,47 @@ O diretório `Firebase/functions/` contém uma função de busca web opcional e 
 
 Documentação: [Firebase AI Logic para Web](https://firebase.google.com/docs/ai-logic/get-started?platform=web), [App Check](https://firebase.google.com/docs/app-check) e [regras do Firestore](https://firebase.google.com/docs/firestore/security/rules-conditions).
 
-## Instalação e desbloqueio por QR (preparado para hospedagem)
+## Endereço da planta e GPS reversível
+
+O login continua por e-mail e senha; o cadastro não pede CPF. O endereço é o local
+onde a planta está sendo cultivada, mesmo que seja diferente da residência da
+pessoa. Ele é salvo em `end`, `localCultivo` (endereço, cidade e UF), na planta e
+nos novos registros. O cadastro usa validação local, sem depender de IA.
+
+O GPS está desativado em `app-features.js`, por `gpsEnabled: false`. Para restaurar
+a opção, altere para `true` e recarregue o app. A captura continua opcional e exige
+marcar que a pessoa está junto da planta e autoriza usar a localização. Câmera,
+QR Codes e fotos continuam disponíveis. Enquanto a chave estiver desativada,
+coordenadas antigas não são reutilizadas em novos registros nem enviadas nas
+novas sincronizações. Os dados antigos deste aparelho não são apagados.
+
+## Mapa de utilização no administrador
+
+O mapa usa apenas cadastros com endereço de cultivo completo. Sem endereço, não
+há ponto; coordenadas de GPS antigas não criam pontos. Para ver todas as pessoas,
+o navegador precisa de acesso administrativo no Firebase e os participantes
+precisam ter autorizado a sincronização. Sem esse acesso, aparecem apenas as
+contas deste aparelho.
+
+Os marcadores são vermelhos e mostram uma posição **aproximada por município**,
+sem indicar a casa ou a rua. Pessoas do mesmo município compartilham um marcador
+com contagem; tocar nele mostra seus cadastros. O botão **Atualizar mapa** tenta
+novamente quando a conexão falhar ou a cidade não puder ser localizada.
+
+O módulo consulta a lista de municípios e a malha geográfica oficial do IBGE.
+Somente UF e código do município são enviados nessas consultas; rua, número,
+nome e e-mail não são enviados ao IBGE. O cache local guarda apenas município,
+UF e coordenadas aproximadas por até 30 dias. Não exige chave, GPS ou faturamento.
+Fontes: [Localidades](https://servicodados.ibge.gov.br/api/docs/localidades) e
+[Malhas geográficas](https://servicodados.ibge.gov.br/api/docs/malhas?versao=3).
+
+## Instalação e desbloqueio por QR
 
 A página `instalar.html`, os manifestos PWA e o service worker estão preparados.
-Versionar os arquivos no GitHub não confirma que o site esteja online. Os links
-finais precisam de hospedagem HTTPS antes de gerar/imprimir etiquetas para celulares.
+Os seis links oficiais estão em [QR-CODES-INSTALACAO.md](QR-CODES-INSTALACAO.md) e
+[QR-LINKS-ATUAIS.csv](QR-LINKS-ATUAIS.csv). A publicação `20261028-3` usa `index.html`
+como entrada atual, mantendo o arquivo da versão 20 compatível. Os links e os
+arquivos carregados incluem a versão para evitar a interface antiga em cache.
 O conteúdo de cada imagem QR deve ser o link completo da instalação com seu ID.
 O campo `code` do Firestore permanece como identificador interno, sem alteração.
 

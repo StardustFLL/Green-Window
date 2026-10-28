@@ -4,7 +4,7 @@
   "short_name": "Janela Verde",
   "description": "Cultive plantas, desbloqueie pelo QR e acompanhe suas metas.",
   "lang": "pt-BR",
-  "start_url": "./Janela%20Verde%20(20).html?planta=planta-1",
+  "start_url": "./index.html?planta=planta-1&v=20261028-3",
   "scope": "./",
   "display": "standalone",
   "background_color": "#110b20",

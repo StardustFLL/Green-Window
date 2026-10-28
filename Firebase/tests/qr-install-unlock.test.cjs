@@ -146,7 +146,7 @@ test('the installation screen preserves the plant in the app link and only promp
   element('#install-button').hidden = true;
   vm.runInContext(read('install.js'), sandbox);
   assert.equal(links.pending(), 'planta-4');
-  assert.equal(element('#app-manifest').href, 'manifest-planta-4.webmanifest');
+  assert.equal(new URL(element('#app-manifest').href, origin).pathname, '/Green-Window/manifest-planta-4.webmanifest');
   assert.equal(new URL(element('#open-app').href).searchParams.get('planta'), 'planta-4');
   events.beforeinstallprompt({ preventDefault() {}, prompt: async () => { prompts++; }, userChoice: Promise.resolve({ outcome: 'dismissed' }) });
   assert.equal(prompts, 0); assert.equal(element('#install-button').hidden, false);
