@@ -1,8 +1,8 @@
 # QR Codes para instalar o Janela Verde e desbloquear plantas
 
-**Preparação local — ainda não publicado, conforme sua escolha.**
+**Arquivos preparados — confirme a hospedagem antes de imprimir.**
 As imagens dos QR Codes poderão ser geradas a partir dos links completos abaixo
-depois que a página e os arquivos do app forem publicados. Não imprima etiquetas
+depois que a página e os arquivos do app estiverem acessíveis por HTTPS. Não imprima etiquetas
 definitivas antes de confirmar o endereço público.
 
 ## Links previstos para GitHub Pages

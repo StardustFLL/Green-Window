@@ -56,11 +56,11 @@ O diretório `Firebase/functions/` contém uma função de busca web opcional e 
 
 Documentação: [Firebase AI Logic para Web](https://firebase.google.com/docs/ai-logic/get-started?platform=web), [App Check](https://firebase.google.com/docs/app-check) e [regras do Firestore](https://firebase.google.com/docs/firestore/security/rules-conditions).
 
-## Instalação e desbloqueio por QR (preparado localmente)
+## Instalação e desbloqueio por QR (preparado para hospedagem)
 
 A página `instalar.html`, os manifestos PWA e o service worker estão preparados.
-O usuário escolheu manter esta etapa local, sem publicar. Os links finais precisam
-de hospedagem HTTPS antes de gerar/imprimir etiquetas para celulares.
+Versionar os arquivos no GitHub não confirma que o site esteja online. Os links
+finais precisam de hospedagem HTTPS antes de gerar/imprimir etiquetas para celulares.
 O conteúdo de cada imagem QR deve ser o link completo da instalação com seu ID.
 O campo `code` do Firestore permanece como identificador interno, sem alteração.
 
