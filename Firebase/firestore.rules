@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/config/admins)
+        && request.auth.uid in get(/databases/$(database)/documents/config/admins).data.uids;
+    }
+
+    function validRankingEntry() {
+      return request.resource.data.keys().hasOnly(['char', 'av', 'pts', 'dias', 'cur', 'best', 'ts'])
+        && request.resource.data.keys().hasAll(['char', 'av', 'pts', 'dias', 'cur', 'best', 'ts'])
+        && request.resource.data.char is string
+        && request.resource.data.char.size() <= 20
+        && request.resource.data.av is map
+        && request.resource.data.pts is number
+        && request.resource.data.dias is number
+        && request.resource.data.cur is number
+        && request.resource.data.best is number
+        && request.resource.data.ts is number;
+    }
+
+    function validPlantId(id) {
+      return id.matches('^planta-[1-6]$');
+    }
+
+    function validPlant(id) {
+      return validPlantId(id)
+        && request.resource.data.keys().hasOnly(['plantId', 'plantName', 'code', 'active', 'scanCount', 'createdAt', 'createdBy', 'lastScannedAt'])
+        && request.resource.data.keys().hasAll(['plantId', 'plantName', 'code', 'active', 'scanCount'])
+        && request.resource.data.plantId == id
+        && request.resource.data.code == 'janelaverde:' + id
+        && request.resource.data.plantName is string
+        && request.resource.data.plantName.size() > 0
+        && request.resource.data.plantName.size() <= 100
+        && request.resource.data.active is bool
+        && request.resource.data.scanCount is int
+        && request.resource.data.scanCount >= 0;
+    }
+
+    function validPlantScan() {
+      return signedIn() && resource.data.active == true
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scanCount', 'lastScannedAt'])
+        && request.resource.data.scanCount == resource.data.scanCount + 1
+        && request.resource.data.lastScannedAt == request.time;
+    }
+
+    function validRegistrationVaseLink() {
+      let id = request.resource.data.projectPlantId;
+      return id is string && validPlantId(id)
+        && exists(/databases/$(database)/documents/plantas/$(id))
+        && get(/databases/$(database)/documents/plantas/$(id)).data.active == true
+        && get(/databases/$(database)/documents/plantas/$(id)).data.plantId == id
+        && get(/databases/$(database)/documents/plantas/$(id)).data.code == request.resource.data.qrCode
+        && get(/databases/$(database)/documents/plantas/$(id)).data.plantName == request.resource.data.plantName;
+    }
+
+    // Cada navegador autenticado anônimo só acessa o próprio espaço.
+    // O administrador é definido manualmente em config/admins.
+    match /cadastros/{uid} {
+      allow get, create, update, delete: if signedIn() && (request.auth.uid == uid || admin());
+      allow list: if admin();
+
+      match /regs/{regId} {
+        allow read, delete: if signedIn() && (request.auth.uid == uid || admin());
+        allow create: if (signedIn() && request.auth.uid == uid && validRegistrationVaseLink()) || admin();
+        allow update: if admin() || signedIn() && request.auth.uid == uid
+          && request.resource.data.get('projectPlantId', '') == resource.data.get('projectPlantId', '')
+          && request.resource.data.get('qrCode', '') == resource.data.get('qrCode', '')
+          && request.resource.data.get('plantName', '') == resource.data.get('plantName', '')
+          && (resource.data.qrToken is string
+            && request.resource.data.qrToken == resource.data.qrToken
+            && request.resource.data.vaseId == resource.data.vaseId
+            || !('qrToken' in request.resource.data) && !('qrToken' in resource.data));
+      }
+    }
+
+    match /plantas/{plantId} {
+      allow read: if signedIn();
+      allow create: if admin() && validPlant(plantId) && request.resource.data.scanCount == 0;
+      allow update: if validPlant(plantId) && (admin() || validPlantScan());
+      allow delete: if false;
+    }
+
+    // Inventário anterior preservado; a nova versão não o usa para validar leituras.
+    match /qrcodes/{qrId} {
+      allow read: if admin();
+      allow write: if false;
+    }
+
+    match /ranking/{docId} {
+      allow read: if signedIn();
+      allow create, update: if (signedIn()
+        && docId.matches(request.auth.uid + '_.*')
+        && validRankingEntry()) || admin();
+      allow delete: if (signedIn() && docId.matches(request.auth.uid + '_.*')) || admin();
+    }
+
+    match /config/admins {
+      allow get: if signedIn();
+      allow list, create, update, delete: if false;
+    }
+
+    match /config/{configId} {
+      allow read: if signedIn() && configId != 'admins';
+      allow write: if admin() && configId != 'admins';
+    }
+
+    match /logs/{logId} {
+      allow create: if signedIn() && request.resource.data.owner == request.auth.uid;
+      allow read, delete: if admin()
+        || signedIn() && resource.data.owner == request.auth.uid;
+      allow update: if false;
+    }
+
+    match /rate_limits/{uid} {
+      allow read, write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

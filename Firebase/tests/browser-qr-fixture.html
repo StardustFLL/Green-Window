@@ -1,0 +1,23 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Teste local do fluxo de QR</title>
+<style>body{background:#110b20;color:#fff;font:16px system-ui;margin:20px}a{color:#ddc0ff;margin-right:20px}iframe{display:block;width:100%;height:1750px;border:1px solid #8560ab;margin-top:16px}#state{color:#e7d4ff}</style>
+<h1>Teste local — seis plantas bloqueadas por QR</h1>
+<p>Conta técnica sem dados pessoais e sem sincronização de cadastro. Use somente na porta local dedicada aos testes.</p>
+<p><a target="app-preview" href="../../Janela%20Verde%20(20).html">Catálogo</a><a target="app-preview" href="../../instalar.html?planta=planta-3">Simular QR da Planta 3</a></p>
+<p id="state" role="status">Preparando…</p><iframe name="app-preview" id="preview" title="Aplicativo em teste"></iframe>
+<script>
+if (location.hostname !== '127.0.0.1' || location.port !== '8767') {
+  document.querySelector('#state').textContent = 'Fixture desativada: use http://127.0.0.1:8767 para não alterar dados de um navegador em uso.';
+} else {
+  const user = { id:'fixture-qr', nome:'Teste local de QR', cpf:'', email:'', tel:'', nasc:'', char:'Teste QR', created:Date.now(),
+    ph:'fixture-sem-login', salt:'fixture', avatar:'🌸', consent:Date.now(), cloudConsent:false, cloudConsentAt:null,
+    plants:[], regs:[], pts:[], resg:[], qr:[], coll:{}, shots:[], sched:[], pg:{}, pc:{}, geo:null, onboarded:true };
+  localStorage.setItem('jv_demo_v1', JSON.stringify({users:{[user.id]:user},session:user.id}));
+  localStorage.removeItem('jv_pending_plant_v1');
+  const frame=document.querySelector('#preview');
+  frame.onload=()=>{
+    if(typeof frame.contentWindow.go==='function') frame.contentWindow.go('catalog');
+    document.querySelector('#state').textContent='App carregado. Verifique o catálogo e simule a entrada pelo link de instalação.';
+  };
+  frame.src='../../Janela%20Verde%20(20).html';
+}
+</script></html>

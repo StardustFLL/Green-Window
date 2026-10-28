@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Conexão Firebase — Janela Verde</title>
+<style>body{font:16px system-ui;background:#170d2e;color:#fff;max-width:760px;margin:40px auto;padding:16px}button,a{font:inherit}button{padding:12px;margin:6px 6px 6px 0;cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid #8560ab;padding:16px}a{color:#dcc9ff}</style>
+<h1>Conexão com o Firebase</h1>
+<p>Projeto: <b id="project"></b> · Banco: <b id="database"></b></p>
+<p>UID deste navegador: <code id="uid">Conectando…</code></p>
+<button id="read">Verificar as seis plantas</button>
+<button id="scan">Testar leitura do QR da Planta 1</button>
+<button id="registration">Testar registro temporário</button>
+<p>O segundo teste incrementa o contador da Planta 1 em uma leitura real. Nenhum cadastro pessoal é criado.</p>
+<p>O teste de registro grava, lê e remove apenas uma atividade técnica criada por este teste; também verifica a recusa de um QR incorreto.</p>
+<pre id="result" role="status" aria-live="polite">Iniciando autenticação anônima…</pre>
+<p><a href="../Janela%20Verde%20(20).html">Abrir Janela Verde (20)</a></p>
+<script src="firebase-config.js"></script>
+<script src="../qr-links.js"></script>
+<script src="firebase-adapter.js"></script>
+<script>
+(() => {
+  const result = document.querySelector('#result');
+  const showError = error => { result.textContent = 'Falha: ' + String(error.code || '') + ' — ' + String(error.message || error); };
+  document.querySelector('#project').textContent = window.JV_FIREBASE_CONFIG.projectId;
+  document.querySelector('#database').textContent = window.JV_FIREBASE_CONFIG.databaseId;
+  let connection;
+  const connect = () => connection || (connection = (async () => {
+    const user = await window.claude.use('user');
+    document.querySelector('#uid').textContent = await user.id();
+    return window.claude.use('qr-codes');
+  })().catch(error => { connection = null; throw error; }));
+  async function run(button, action) {
+    button.disabled = true;
+    result.textContent = 'Consultando o Firebase…';
+    try { await action(await connect()); } catch (error) { showError(error); }
+    finally { button.disabled = false; }
+  }
+  document.querySelector('#read').onclick = event => run(event.currentTarget, async api => {
+    const rows = await Promise.all(Array.from({length:6}, (_,i) => api.lookup('janelaverde:planta-' + (i+1))));
+    if (rows.some(row => !row)) throw new Error('Há plantas não cadastradas, desativadas ou com código diferente do esperado.');
+    result.textContent = 'Leitura real no Firestore concluída: 6/6 plantas.\n' + rows.map(row => row.plantId + ' · ' + row.plantName + ' · ' + row.code).join('\n');
+  });
+  document.querySelector('#scan').onclick = event => run(event.currentTarget, async api => {
+    const row = await api.scan('janelaverde:planta-1');
+    if (!row) throw new Error('A Planta 1 não está cadastrada e ativa.');
+    result.textContent = 'Gravação real confirmada: contador da ' + row.plantId + ' incrementado pelo mesmo adapter usado no app.';
+  });
+  document.querySelector('#registration').onclick = event => run(event.currentTarget, async api => {
+    const row = await api.lookup('janelaverde:planta-1');
+    if (!row) throw new Error('A Planta 1 precisa estar cadastrada e ativa.');
+    const user = await window.claude.use('user');
+    if (user.canEdit()) throw new Error('Faça o teste de recusa em um navegador sem privilégio administrativo.');
+    const db = await window.claude.use('db');
+    const ref = db.doc('cadastros/' + await user.id() + '/regs/diagnostico_' + Date.now());
+    const data = { conta: '__diagnostico__', ts: Date.now(), obs: 'Teste técnico temporário de integração',
+      plant: row.plantName, projectPlantId: row.plantId, plantName: row.plantName,
+      qrCode: row.code, qrToken: row.token, vaseId: row.vaseId, vaseName: row.vaseName, geo: null, th: '' };
+    let created = false;
+    try {
+      await ref.set(data); created = true;
+      const saved = await ref.get();
+      if (!saved.exists || saved.data().projectPlantId !== row.plantId) throw new Error('O registro não foi confirmado no servidor.');
+    } finally { if (created) await ref.delete(); }
+    try {
+      await ref.set({ ...data, qrCode: 'codigo-nao-emitido-pelo-projeto' });
+      await ref.delete();
+      throw new Error('O servidor aceitou um QR incorreto. Revise as regras.');
+    } catch (error) {
+      if (error.code !== 'permission-denied') throw error;
+    }
+    result.textContent = 'Registro real salvo, lido e removido com sucesso. QR incorreto recusado pelas regras do servidor. Nenhum cadastro pessoal ou atividade técnica foi mantido.';
+  });
+  connect().then(() => { result.textContent = 'Autenticação anônima pronta. Use os botões para verificar leitura e gravação reais.'; }).catch(showError);
+})();
+</script>
+</html>
