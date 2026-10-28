@@ -1,7 +1,7 @@
 /* Links públicos dos seis QR Codes. Não concede desbloqueio: o app valida no Firestore. */
 (function () {
   'use strict';
-  const release = '20261028-3';
+  const release = '20261028-4';
   const ids = Object.freeze(Array.from({ length: 6 }, (_, i) => 'planta-' + (i + 1)));
   const scriptRoot = new URL('.', document.currentScript?.src || location.href);
   const pendingKey = 'jv_pending_plant_v1';

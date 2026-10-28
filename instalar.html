@@ -5,16 +5,16 @@
 <meta name="theme-color" content="#29164b">
 <meta name="description" content="Instale o Janela Verde e desbloqueie a planta do seu QR Code.">
 <title>Instalar Janela Verde</title>
-<meta name="jv-release" content="20261028-3">
+<meta name="jv-release" content="20261028-4">
 <link id="app-manifest" rel="manifest">
 <link rel="icon" href="assets/icons/app.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 <style>
 :root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#faf7ff;background:#110b20}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 0,#5e398470,transparent 60%)}main{max-width:680px;margin:auto;padding:48px 22px 64px}.brand{display:flex;align-items:center;gap:14px}.brand img{width:66px;height:66px;border-radius:18px}.brand span{font-size:1.3rem;font-weight:700}.eyebrow{color:#d1b4f6;font-size:.8rem;letter-spacing:.15em;margin:34px 0 12px}h1{font-size:clamp(2rem,7vw,3.5rem);line-height:1.06;letter-spacing:-.04em;margin:0 0 18px}p{line-height:1.65;color:#d9cfea}.card{border:1px solid #8560ab80;background:#29164bd9;border-radius:22px;padding:22px;margin:24px 0}.tag{display:inline-block;background:#244933;color:#bdffd0;border:1px solid #56846a;border-radius:99px;padding:7px 14px}.actions{display:grid;gap:10px;margin-top:22px}button,.button{display:block;text-align:center;padding:15px 18px;border-radius:14px;border:1px solid #ad8ad9;font:inherit;font-weight:650;cursor:pointer;text-decoration:none}.primary{background:#e0c2ff;color:#221237}.secondary{background:#3e285b;color:#fff}button:disabled{opacity:.5;cursor:wait}[hidden]{display:none!important}ol{padding-left:22px;color:#dfd5ed}li{line-height:1.65;margin:10px 0}.small{font-size:.85rem;color:#baacca}.error{color:#ffbecb}a{color:#e6cbff}footer{border-top:1px solid #8560ab60;margin-top:32px;padding-top:20px}
 </style>
-<script src="Firebase/firebase-config.js?v=20261028-3"></script>
-<script src="qr-links.js?v=20261028-3"></script>
-<script src="install.js?v=20261028-3" defer></script>
+<script src="Firebase/firebase-config.js?v=20261028-4"></script>
+<script src="qr-links.js?v=20261028-4"></script>
+<script src="install.js?v=20261028-4" defer></script>
 </head>
 <body><main>
 <div class="brand"><img src="assets/icons/icon-192.png" alt=""><span>Janela Verde</span></div>
@@ -25,7 +25,7 @@
 <span class="tag" id="plant-label">As seis plantas, um aplicativo</span>
 <h2 id="qr-heading">Do QR Code para o seu catálogo</h2>
 <p id="plant-message">Cada planta tem seu próprio QR Code. Abra um deles para levar a identificação da planta ao aplicativo.</p>
-<div class="actions"><button id="install-button" class="primary" hidden>Instalar aplicativo</button><a id="open-app" class="button secondary" href="index.html?v=20261028-3">Abrir aplicativo</a></div>
+<div class="actions"><button id="install-button" class="primary" hidden>Instalar aplicativo</button><a id="open-app" class="button secondary" href="index.html?v=20261028-4">Abrir aplicativo</a></div>
 <p id="install-status" role="status" aria-live="polite" class="small">Você também pode usar o aplicativo no navegador.</p>
 </section>
 <section aria-labelledby="steps-heading"><h2 id="steps-heading">Como funciona</h2><ol>

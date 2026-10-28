@@ -4,6 +4,7 @@
 <h1>Prévia técnica — dados de teste</h1>
 <p>Ambiente local isolado, sem sincronização de cadastro. Os municípios são reais; as contas e as ruas são exemplos.</p>
 <button onclick="preview('signup')">Ver cadastro sem CPF e GPS</button>
+<button onclick="preview('avatar')">Ver personalização</button>
 <button onclick="preview('empty')">Mapa sem endereço</button>
 <button onclick="preview('addresses')">Mapa com endereços de teste</button>
 <p id="state" role="status">Preparando…</p><iframe id="preview" title="App local em teste"></iframe>
@@ -26,8 +27,9 @@ function preview(mode){
   const frame=document.querySelector('#preview');
   frame.onload=()=>{
     if(mode==='signup')frame.contentWindow.go('signup');
+    else if(mode==='avatar')frame.contentWindow.go('profile');
     else frame.contentWindow.eval("tmp.admok=true;go('admin')");
-    document.querySelector('#state').textContent=mode==='signup'?'Cadastro: sem CPF, sem GPS e com endereço da planta.':mode==='empty'?'Sem endereço: nenhum marcador deve aparecer, mesmo com coordenadas antigas.':'Três endereços de teste: dois municípios; Limeira deve agrupar duas contas. A conta sem endereço fica fora do mapa.';
+    document.querySelector('#state').textContent=mode==='signup'?'Cadastro: sem CPF, sem GPS e com endereço da planta.':mode==='avatar'?'Personalização de conta técnica, sem sincronização. Verifique os cabelos e as prévias.':mode==='empty'?'Sem endereço: nenhum marcador deve aparecer, mesmo com coordenadas antigas.':'Três endereços de teste: dois municípios; Limeira deve agrupar duas contas. A conta sem endereço fica fora do mapa.';
   };
   frame.src='../../Janela%20Verde%20(20).html';
 }

@@ -1,9 +1,13 @@
 /* Somente arquivos estáticos locais. Nenhuma resposta do Firebase é armazenada. */
-const RELEASE = '20261028-3';
+const RELEASE = '20261028-4';
 const CACHE = 'green-window-shell-qr-' + RELEASE;
 const SHELL = [
   'index.html', 'instalar.html', 'Janela%20Verde%20(20).html', 'install.js', 'pwa-boot.js',
-  'app-features.js', 'usage-map.js',
+  'app-features.js', 'usage-map.js', 'admin-map.js', 'avatar-hair.js',
+  'vendor/leaflet-1.9.4/leaflet.js', 'vendor/leaflet-1.9.4/leaflet.css',
+  'vendor/leaflet-1.9.4/images/layers.png', 'vendor/leaflet-1.9.4/images/layers-2x.png',
+  'vendor/leaflet-1.9.4/images/marker-icon.png', 'vendor/leaflet-1.9.4/images/marker-icon-2x.png',
+  'vendor/leaflet-1.9.4/images/marker-shadow.png',
   'qr-links.js', 'plant-unlocks.js', 'Firebase/firebase-config.js', 'Firebase/firebase-adapter.js',
   'manifest.webmanifest', ...Array.from({ length: 6 }, (_, i) => 'manifest-planta-' + (i + 1) + '.webmanifest'),
   'assets/icons/app.svg', 'assets/icons/icon-192.png', 'assets/icons/icon-512.png'

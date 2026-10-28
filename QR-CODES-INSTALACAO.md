@@ -1,8 +1,8 @@
 # QR Codes para instalar o Janela Verde e desbloquear plantas
 
 Os seis links abaixo abrem a página de instalação e levam à versão atual em
-`index.html`. A publicação `20261028-3` reúne catálogo por QR, cadastro sem CPF,
-GPS desativado e mapa administrativo. `Janela Verde (20).html` mantém o mesmo
+`index.html`. A publicação `20261028-4` reúne catálogo por QR, cadastro sem CPF,
+GPS desativado, cabelos corrigidos e mapa administrativo detalhado. `Janela Verde (20).html` mantém o mesmo
 conteúdo para preservar acessos anteriores.
 
 ## Links de acesso atualizados
@@ -13,12 +13,12 @@ Também há uma lista pronta para copiar/importar em [QR-LINKS-ATUAIS.csv](QR-LI
 
 | Planta | Espécie no catálogo | Conteúdo do QR atualizado |
 |---|---|---|
-| `planta-1` | Onze-horas | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-1&v=20261028-3` |
-| `planta-2` | Lambari-roxo | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-2&v=20261028-3` |
-| `planta-3` | Tradescantia | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-3&v=20261028-3` |
-| `planta-4` | Trapoeraba | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-4&v=20261028-3` |
-| `planta-5` | Capim-limão | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-5&v=20261028-3` |
-| `planta-6` | Jabuticaba | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-6&v=20261028-3` |
+| `planta-1` | Onze-horas | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-1&v=20261028-4` |
+| `planta-2` | Lambari-roxo | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-2&v=20261028-4` |
+| `planta-3` | Tradescantia | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-3&v=20261028-4` |
+| `planta-4` | Trapoeraba | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-4&v=20261028-4` |
+| `planta-5` | Capim-limão | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-5&v=20261028-4` |
+| `planta-6` | Jabuticaba | `https://stardustfll.github.io/Green-Window/instalar.html?planta=planta-6&v=20261028-4` |
 
 A página é a mesma (`instalar.html`); o parâmetro `planta` identifica qual planta
 deve ser liberada. Não faça seis QR Codes com um link totalmente idêntico, pois
@@ -85,7 +85,7 @@ e [identidade do aplicativo](https://developer.mozilla.org/en-US/docs/Web/Progre
 ## Arquivos necessários para a publicação
 
 - `instalar.html`, `install.js`, `qr-links.js`.
-- `app-features.js` e `usage-map.js`.
+- `app-features.js`, `usage-map.js`, `admin-map.js`, `avatar-hair.js` e `vendor/leaflet-1.9.4/`.
 - `Janela Verde (20).html`, `plant-unlocks.js`, `pwa-boot.js`.
 - `manifest.webmanifest` e `manifest-planta-1.webmanifest` até `manifest-planta-6.webmanifest`.
 - `sw.js` e a pasta `assets/icons/`.

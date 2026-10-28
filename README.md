@@ -11,7 +11,9 @@ App web de jardinagem e biodiversidade da equipe **STARDUST – SESI 005 Limeira
 | `index.html` | Entrada oficial: versão atual completa do app |
 | `Janela Verde (20).html` | Mesmo conteúdo do index, preservado para links anteriores |
 | `app-features.js` | Chave reversível do GPS, desativado por padrão |
-| `usage-map.js` | Mapa administrativo por município, sem GPS |
+| `usage-map.js` | Localização aproximada por município, sem GPS |
+| `admin-map.js` | Mapa detalhado OpenStreetMap/Leaflet, com zoom e link externo |
+| `avatar-hair.js` | Cabelos em SVG com IDs de personalização preservados |
 | `Firebase/firebase-config.js` | Configuração pública do app Web Firebase e chave pública do App Check |
 | `Firebase/firebase-adapter.js` | Autenticação anônima, Firestore e chamada da função de IA |
 | `Firebase/firestore.rules` | Regras de acesso ao Firestore |
@@ -75,13 +77,20 @@ novas sincronizações. Os dados antigos deste aparelho não são apagados.
 
 ## Mapa de utilização no administrador
 
-O mapa usa apenas cadastros com endereço de cultivo completo. Sem endereço, não
+A aba do administrador incorpora um mapa detalhado do OpenStreetMap com Leaflet
+1.9.4: zoom, arraste, visão do mundo e link para abrir a mesma área em outra aba.
+A biblioteca é local (`vendor/leaflet-1.9.4/`), com licença incluída; as imagens
+do mapa são carregadas diretamente do OpenStreetMap com atribuição visível.
+Não há download de mapas offline nem solicitação de GPS.
+
+Os pontos usam apenas cadastros com endereço de cultivo completo. Sem endereço, não
 há ponto; coordenadas de GPS antigas não criam pontos. Para ver todas as pessoas,
 o navegador precisa de acesso administrativo no Firebase e os participantes
 precisam ter autorizado a sincronização. Sem esse acesso, aparecem apenas as
 contas deste aparelho.
 
-Os marcadores são vermelhos e mostram uma posição **aproximada por município**,
+Mesmo ao ampliar até o nível das ruas, os marcadores são vermelhos e mostram
+uma posição **aproximada por município**,
 sem indicar a casa ou a rua. Pessoas do mesmo município compartilham um marcador
 com contagem; tocar nele mostra seus cadastros. O botão **Atualizar mapa** tenta
 novamente quando a conexão falhar ou a cidade não puder ser localizada.
@@ -93,11 +102,18 @@ UF e coordenadas aproximadas por até 30 dias. Não exige chave, GPS ou faturame
 Fontes: [Localidades](https://servicodados.ibge.gov.br/api/docs/localidades) e
 [Malhas geográficas](https://servicodados.ibge.gov.br/api/docs/malhas?versao=3).
 
+## Personalização do cabelo
+
+A publicação `20261028-4` corrige as camadas e os recortes dos cabelos e mostra
+prévias na personalização. Topete e Degradê foram removidos das opções e dos
+modelos prontos. Os 16 estilos restantes mantêm seus IDs; perfis que usavam
+Topete ou Degradê exibem Social, preservando as outras escolhas.
+
 ## Instalação e desbloqueio por QR
 
 A página `instalar.html`, os manifestos PWA e o service worker estão preparados.
 Os seis links oficiais estão em [QR-CODES-INSTALACAO.md](QR-CODES-INSTALACAO.md) e
-[QR-LINKS-ATUAIS.csv](QR-LINKS-ATUAIS.csv). A publicação `20261028-3` usa `index.html`
+[QR-LINKS-ATUAIS.csv](QR-LINKS-ATUAIS.csv). A publicação `20261028-4` usa `index.html`
 como entrada atual, mantendo o arquivo da versão 20 compatível. Os links e os
 arquivos carregados incluem a versão para evitar a interface antiga em cache.
 O conteúdo de cada imagem QR deve ser o link completo da instalação com seu ID.
